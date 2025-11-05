@@ -1,4 +1,7 @@
 package se.cecilia.Bookingservice.model;
 
-public class BookingStatus {
+public enum BookingStatus {
+    PENDING,
+    CONFIRMED,
+    CANCELLED
 }
