@@ -2,19 +2,70 @@ services:
   postgres:
     image: postgres:16-alpine
     container_name: bookings_postgres
+    env_file:
+      - .env
     environment:
-      POSTGRES_DB: bookingdb
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d bookingdb"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 3
+    networks:
+      - booking-network
+
+  app1:
+    build: .
+    container_name: bookingservice_app1
+    env_file:
+      - .env
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - booking-network
+
+  app2:
+    build: .
+    container_name: bookingservice_app2
+    env_file:
+      - .env
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - booking-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: bookings_nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - app1
+      - app2
+    networks:
+      - booking-network
 
 volumes:
   postgres_data:
+
+networks:
+  booking-network:
+    driver: bridge
