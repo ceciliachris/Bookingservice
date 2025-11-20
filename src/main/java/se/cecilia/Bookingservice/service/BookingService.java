@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class BookingService {
+public class BookingService implements IBookingService {
 
     private final BookingRepository bookingRepository;
 

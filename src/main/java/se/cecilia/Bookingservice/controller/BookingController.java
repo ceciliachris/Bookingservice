@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import se.cecilia.Bookingservice.model.Booking;
 import se.cecilia.Bookingservice.service.BookingService;
+import se.cecilia.Bookingservice.service.IBookingService;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookingController {
 
-    private final BookingService bookingService;
+    private final IBookingService bookingService;
 
     @PostMapping
     public ResponseEntity<Booking> create(@RequestBody Booking booking) {
