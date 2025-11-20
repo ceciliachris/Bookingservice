@@ -1,10 +1,12 @@
 package se.cecilia.Bookingservice.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import se.cecilia.Bookingservice.model.Booking;
-import se.cecilia.Bookingservice.service.BookingService;
+import se.cecilia.Bookingservice.dto.BookingRequest;
+import se.cecilia.Bookingservice.dto.BookingResponse;
 import se.cecilia.Bookingservice.service.IBookingService;
 
 import java.util.List;
@@ -17,26 +19,27 @@ public class BookingController {
     private final IBookingService bookingService;
 
     @PostMapping
-    public ResponseEntity<Booking> create(@RequestBody Booking booking) {
-        return ResponseEntity.ok(bookingService.create(booking));
+    public ResponseEntity<BookingResponse> create(@Valid @RequestBody BookingRequest request) {
+        BookingResponse response = bookingService.create(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping
-    public ResponseEntity<List<Booking>> findAll() {
+    public ResponseEntity<List<BookingResponse>> findAll() {
         return ResponseEntity.ok(bookingService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Booking> findById(@PathVariable Long id) {
+    public ResponseEntity<BookingResponse> findById(@PathVariable Long id) {
         return ResponseEntity.ok(bookingService.findById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Booking> update(
+    public ResponseEntity<BookingResponse> update(
             @PathVariable Long id,
-            @RequestBody Booking booking
+            @Valid @RequestBody BookingRequest request
     ) {
-        return ResponseEntity.ok(bookingService.update(id, booking));
+        return ResponseEntity.ok(bookingService.update(id, request));
     }
 
     @DeleteMapping("/{id}")

@@ -1,13 +1,14 @@
 package se.cecilia.Bookingservice.service;
 
-import se.cecilia.Bookingservice.model.Booking;
+import se.cecilia.Bookingservice.dto.BookingRequest;
+import se.cecilia.Bookingservice.dto.BookingResponse;
 
 import java.util.List;
 
 public interface IBookingService {
-    List<Booking> findAll();
-    Booking findById(Long id);
-    Booking create(Booking booking);
-    Booking update(Long id, Booking updated);
+    List<BookingResponse> findAll();
+    BookingResponse findById(Long id);
+    BookingResponse create(BookingRequest request);
+    BookingResponse update(Long id, BookingRequest request);
     void delete(Long id);
 }
